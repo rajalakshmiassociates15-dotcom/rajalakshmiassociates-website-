@@ -66,8 +66,8 @@ export const Footer = ({ onOpenConsultation = () => {}, setActiveTab = () => {} 
 
               <div className="flex items-center gap-3">
                 <Mail className="w-4 h-4 text-white shrink-0" />
-                <a href="mailto:info@rajalakshmiassociates.com" className="hover:text-[#EBB638] transition-colors">
-                  info@rajalakshmiassociates.com
+                <a href="mailto:info@rajalakshmyassociates.com" className="hover:text-[#EBB638] transition-colors">
+                  info@rajalakshmyassociates.com
                 </a>
               </div>
 

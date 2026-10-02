@@ -226,8 +226,8 @@ export const ContactUsPage = () => {
                   </div>
                   <div className="space-y-1">
                     <h4 className="font-bold text-[11px] uppercase tracking-wider text-slate-400">Email Address</h4>
-                    <a href="mailto:info@rajalakshmiassociates.com" className="text-xs sm:text-sm font-bold text-slate-800 hover:text-[#700619] transition-colors block break-all">
-                      info@rajalakshmiassociates.com
+                    <a href="mailto:info@rajalakshmyassociates.com" className="text-xs sm:text-sm font-bold text-slate-800 hover:text-[#700619] transition-colors block break-all">
+                      info@rajalakshmyassociates.com
                     </a>
                   </div>
                 </div>
@@ -1021,10 +1021,10 @@ export const ContactUsPage = () => {
               <h4 className="font-bold text-slate-900 text-sm">Email Us</h4>
               <p className="text-xs text-slate-500">Drop us your details</p>
               <a 
-                href="mailto:info@rajalakshmiassociates.com" 
+                href="mailto:info@rajalakshmyassociates.com" 
                 className="text-xs font-bold text-purple-600 hover:underline block pt-0.5 truncate"
               >
-                info@rajalakshmiassociates.com
+                info@rajalakshmyassociates.com
               </a>
             </div>
           </div>

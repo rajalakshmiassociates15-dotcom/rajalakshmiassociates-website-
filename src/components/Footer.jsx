@@ -110,11 +110,7 @@ export const Footer = ({ onOpenConsultation = () => {}, setActiveTab = () => {} 
         <div className="pt-4 border-t border-[#850D24]/80 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-white/90 font-medium">
           <p>© {new Date().getFullYear()} Rajalakshmy Associates. All Rights Reserved.</p>
           
-          <div className="flex items-center space-x-4 text-white/90">
-            <a href="#privacy" className="hover:text-[#EBB638] transition-colors">Privacy Policy</a>
-            <span>|</span>
-            <a href="#terms" className="hover:text-[#EBB638] transition-colors">Terms &amp; Conditions</a>
-          </div>
+        
         </div>
 
       </div>
@@ -123,3 +119,6 @@ export const Footer = ({ onOpenConsultation = () => {}, setActiveTab = () => {} 
 };
 
 export default Footer;
+
+
+

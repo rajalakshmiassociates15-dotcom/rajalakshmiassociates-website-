@@ -22,11 +22,13 @@ import {
   Check,
   Award,
   ChevronRight,
-  MapPinned
+  MapPinned,
+  Loader2
 } from 'lucide-react';
 
 export const ContactUsPage = () => {
   const [formSubmitted, setFormSubmitted] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [activeTab, setActiveTab] = useState('Loans'); // 'Loans' | 'Properties' | 'Insurance'
   const [selectedMapBranch, setSelectedMapBranch] = useState('gorimedu'); // 'gorimedu' | 'thilaspet'
   const [formData, setFormData] = useState({
@@ -90,9 +92,53 @@ export const ContactUsPage = () => {
     }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    setFormSubmitted(true);
+    setIsSubmitting(true);
+
+    try {
+      const emailPayload = {
+        _subject: `New Enquiry from ${formData.name || 'Customer'} - ${formData.enquiryType}`,
+        _template: 'table',
+        _captcha: 'false',
+        'Customer Name': formData.name,
+        'Phone Number': `+91 ${formData.phone}`,
+        'Email Address': formData.email || 'Not provided',
+        'Enquiry Type': formData.enquiryType,
+        ...(formData.enquiryType === 'Loans' && {
+          'Loan Type': formData.loanType,
+          'Loan Amount': formData.loanAmount ? `₹ ${formData.loanAmount}` : 'Not specified',
+        }),
+        ...(formData.enquiryType === 'Properties' && {
+          'Property Service': formData.propertyType,
+          'Estimated Budget': formData.propertyBudget ? `₹ ${formData.propertyBudget}` : 'Not specified',
+        }),
+        ...(formData.enquiryType === 'Insurance' && {
+          'Insurance Plan': formData.insuranceType,
+          'Sum Insured / Coverage': formData.insuranceCoverage ? `₹ ${formData.insuranceCoverage}` : 'Not specified',
+        }),
+        'Appointment Mode': formData.appointmentType === 'Direct' 
+          ? `Direct Visit (${formData.preferredBranch})` 
+          : 'Phone Call Consultation',
+        'Preferred Date': formData.preferredDate || 'Earliest available',
+        'Preferred Time Slot': formData.preferredTime,
+        'Remarks': formData.remarks || 'None',
+      };
+
+      await fetch('https://formsubmit.co/ajax/rajalakshmiassociates15@gmail.com', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+        },
+        body: JSON.stringify(emailPayload)
+      });
+    } catch (error) {
+      console.error('Email dispatch error:', error);
+    } finally {
+      setIsSubmitting(false);
+      setFormSubmitted(true);
+    }
   };
 
   const today = new Date().toISOString().split('T')[0];
@@ -417,19 +463,7 @@ export const ContactUsPage = () => {
                   </div>
                 </div>
 
-                <div className="pt-2 flex flex-col sm:flex-row gap-3 justify-center">
-                  <a
-                    href={`https://wa.me/917904634737?text=${encodeURIComponent(
-                      `Hello Rajalakshmy Associates, I have submitted an enquiry for ${formData.enquiryType} (${formData.appointmentType === 'Direct' ? formData.preferredBranch : 'Phone Consultation'}). My name is ${formData.name}.`
-                    )}`}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="inline-flex items-center justify-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-white px-6 py-2.5 rounded-xl text-xs font-bold shadow transition cursor-pointer"
-                  >
-                    <MessageSquare className="w-4 h-4" />
-                    <span>Confirm via WhatsApp</span>
-                  </a>
-
+                <div className="pt-2 flex justify-center">
                   <button 
                     onClick={() => {
                       setFormSubmitted(false);
@@ -840,10 +874,22 @@ export const ContactUsPage = () => {
                 <div className="pt-2 space-y-3">
                   <button 
                     type="submit"
-                    className="w-full bg-[#700619] hover:bg-[#540413] text-white py-3.5 px-8 rounded-2xl font-bold text-sm shadow-md hover:shadow-lg transition-all duration-300 cursor-pointer flex items-center justify-center gap-2 group"
+                    disabled={isSubmitting}
+                    className={`w-full bg-[#700619] hover:bg-[#540413] text-white py-3.5 px-8 rounded-2xl font-bold text-sm shadow-md hover:shadow-lg transition-all duration-300 flex items-center justify-center gap-2 group ${
+                      isSubmitting ? 'opacity-80 cursor-wait' : 'cursor-pointer'
+                    }`}
                   >
-                    <span>Submit Enquiry &amp; Book Appointment</span>
-                    <Send className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                    {isSubmitting ? (
+                      <>
+                        <Loader2 className="w-4 h-4 animate-spin" />
+                        <span>Sending Enquiry...</span>
+                      </>
+                    ) : (
+                      <>
+                        <span>Submit Enquiry &amp; Book Appointment</span>
+                        <Send className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                      </>
+                    )}
                   </button>
 
                   <div className="flex items-center justify-center gap-2 text-xs text-slate-500 font-medium">

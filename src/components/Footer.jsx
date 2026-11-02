@@ -2,14 +2,14 @@ import React from 'react';
 import { Logo } from './Logo';
 import { Phone, Mail, MapPin, Clock } from 'lucide-react';
 
-export const Footer = ({ onOpenConsultation = () => {}, setActiveTab = () => {} }) => {
+export const Footer = ({ onOpenConsultation = () => { }, setActiveTab = () => { } }) => {
   return (
     <footer className="bg-gradient-to-r from-[#4E010F] via-[#670216] to-[#4E010F] text-white pt-12 pb-5 border-t border-[#850D24] select-none">
       <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-10">
-        
+
         {/* MAIN 4-COLUMN GRID WITH VERTICAL DIVIDERS */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-8 pb-10">
-          
+
           {/* COLUMN 1: BRAND LOGO & TAGLINE & SOCIAL ICONS (4 COLS) */}
           <div className="lg:col-span-4 space-y-4 pr-0 lg:pr-6 lg:border-r border-[#850D24]/70">
             {/* Logo Image */}
@@ -58,7 +58,7 @@ export const Footer = ({ onOpenConsultation = () => {}, setActiveTab = () => {} 
               CONTACT US
             </h4>
             <div className="space-y-2.5 text-xs sm:text-sm font-medium text-white/90">
-              
+
               <div className="flex items-center gap-3">
                 <Phone className="w-4 h-4 text-white shrink-0" />
                 <a href="tel:+917904634737" className="hover:text-[#EBB638] transition-colors">+91 79046 34737</a>
@@ -66,8 +66,8 @@ export const Footer = ({ onOpenConsultation = () => {}, setActiveTab = () => {} 
 
               <div className="flex items-center gap-3">
                 <Mail className="w-4 h-4 text-white shrink-0" />
-                <a href="mailto:info@rajalakshmyassociates.com" className="hover:text-[#EBB638] transition-colors">
-                  info@rajalakshmyassociates.com
+                <a href="mailto:rajalakshmyassociates@gmail.com" className="hover:text-[#EBB638] transition-colors">
+                  rajalakshmyassociates@gmail.com
                 </a>
               </div>
 
@@ -109,8 +109,8 @@ export const Footer = ({ onOpenConsultation = () => {}, setActiveTab = () => {} 
         {/* BOTTOM COPYRIGHT BAR */}
         <div className="pt-4 border-t border-[#850D24]/80 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-white/90 font-medium">
           <p>© {new Date().getFullYear()} Rajalakshmy Associates. All Rights Reserved.</p>
-          
-        
+
+
         </div>
 
       </div>

@@ -1,21 +1,21 @@
 import React, { useState } from 'react';
 import buildingHeroImg from '../assets/contact_hero_building.png';
-import { 
-  Phone, 
-  Mail, 
-  MapPin, 
-  Clock, 
-  Send, 
-  ShieldCheck, 
-  Building2, 
-  Navigation, 
-  MessageSquare, 
-  ArrowRight, 
-  CheckCircle2, 
-  Calendar, 
-  IndianRupee, 
-  Briefcase, 
-  Home, 
+import {
+  Phone,
+  Mail,
+  MapPin,
+  Clock,
+  Send,
+  ShieldCheck,
+  Building2,
+  Navigation,
+  MessageSquare,
+  ArrowRight,
+  CheckCircle2,
+  Calendar,
+  IndianRupee,
+  Briefcase,
+  Home,
   Shield,
   Sparkles,
   PhoneCall,
@@ -97,42 +97,52 @@ export const ContactUsPage = () => {
     setIsSubmitting(true);
 
     try {
+      let serviceOption = 'Not specified';
+      let budgetAmount = 'Not specified';
+
+      if (formData.enquiryType === 'Loans') {
+        serviceOption = formData.loanType;
+        budgetAmount = formData.loanAmount ? `₹ ${formData.loanAmount}` : 'Not specified';
+      } else if (formData.enquiryType === 'Properties') {
+        serviceOption = formData.propertyType;
+        budgetAmount = formData.propertyBudget ? `₹ ${formData.propertyBudget}` : 'Not specified';
+      } else if (formData.enquiryType === 'Insurance') {
+        serviceOption = formData.insuranceType;
+        budgetAmount = formData.insuranceCoverage ? `₹ ${formData.insuranceCoverage}` : 'Not specified';
+      }
+
       const emailPayload = {
-        _subject: `New Enquiry from ${formData.name || 'Customer'} - ${formData.enquiryType}`,
-        _template: 'table',
-        _captcha: 'false',
-        'Customer Name': formData.name,
-        'Phone Number': `+91 ${formData.phone}`,
-        'Email Address': formData.email || 'Not provided',
-        'Enquiry Type': formData.enquiryType,
-        ...(formData.enquiryType === 'Loans' && {
-          'Loan Type': formData.loanType,
-          'Loan Amount': formData.loanAmount ? `₹ ${formData.loanAmount}` : 'Not specified',
-        }),
-        ...(formData.enquiryType === 'Properties' && {
-          'Property Service': formData.propertyType,
-          'Estimated Budget': formData.propertyBudget ? `₹ ${formData.propertyBudget}` : 'Not specified',
-        }),
-        ...(formData.enquiryType === 'Insurance' && {
-          'Insurance Plan': formData.insuranceType,
-          'Sum Insured / Coverage': formData.insuranceCoverage ? `₹ ${formData.insuranceCoverage}` : 'Not specified',
-        }),
-        'Appointment Mode': formData.appointmentType === 'Direct' 
-          ? `Direct Visit (${formData.preferredBranch})` 
-          : 'Phone Call Consultation',
-        'Preferred Date': formData.preferredDate || 'Earliest available',
-        'Preferred Time Slot': formData.preferredTime,
-        'Remarks': formData.remarks || 'None',
+        service_id: 'service_4n9zpdj',
+        template_id: 'template_ep7lv5m',
+        user_id: 'T1fMO1XdRdB8_yQOM',
+        template_params: {
+          name: formData.name || 'Valued Customer',
+          phone: `+91 ${formData.phone}`,
+          email: formData.email || 'Not provided',
+          enquiry_type: formData.enquiryType,
+          service_option: serviceOption,
+          budget_amount: budgetAmount,
+          appointment_mode: formData.appointmentType === 'Direct'
+            ? `Direct Visit (${formData.preferredBranch})`
+            : 'Phone Call Consultation',
+          preferred_date: formData.preferredDate || 'Earliest available',
+          preferred_time: formData.preferredTime,
+          remarks: formData.remarks || 'None',
+        }
       };
 
-      await fetch('https://formsubmit.co/ajax/rajalakshmyassociates@gmail.com', {
+      const response = await fetch('https://api.emailjs.com/api/v1.0/email/send', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Accept': 'application/json'
         },
         body: JSON.stringify(emailPayload)
       });
+
+      if (!response.ok) {
+        const errorText = await response.text();
+        console.error('EmailJS error response:', errorText);
+      }
     } catch (error) {
       console.error('Email dispatch error:', error);
     } finally {
@@ -145,15 +155,15 @@ export const ContactUsPage = () => {
 
   return (
     <div className="bg-[#FAF8F5] min-h-screen text-slate-800 font-sans pb-20 select-none overflow-x-hidden">
-      
+
       {/* 1. PLEASANT & SERENE HERO SECTION */}
       <section className="w-full relative overflow-hidden bg-gradient-to-b from-[#FFFDF9] via-[#FAF6F0] to-[#FAF8F5] pt-4 pb-8 sm:pt-6 sm:pb-12 lg:pt-8 lg:pb-14 border-b border-amber-900/5">
-        
+
         {/* Right Slanted Hero Image with Soft Warm Lighting */}
         <div className="absolute top-0 bottom-0 right-0 w-full lg:w-[48%] xl:w-[50%] hidden lg:block overflow-hidden z-10 pointer-events-none">
-          <div 
+          <div
             className="absolute inset-0 bg-cover bg-center bg-no-repeat shadow-2xl z-20 transition-transform duration-700 hover:scale-105"
-            style={{ 
+            style={{
               backgroundImage: `url(${buildingHeroImg})`,
               clipPath: 'polygon(14% 0, 100% 0, 100% 100%, 0% 100%)'
             }}
@@ -173,7 +183,7 @@ export const ContactUsPage = () => {
 
         <div className="max-w-[1440px] mx-auto w-full px-4 sm:px-6 lg:px-12 relative z-20">
           <div className="max-w-xl lg:max-w-2xl text-left space-y-4 sm:space-y-5">
-            
+
             {/* Tagline Badge */}
             <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-amber-500/10 border border-amber-500/20 text-[#700619]">
               <Sparkles className="w-3.5 h-3.5 text-[#D97706]" />
@@ -213,8 +223,8 @@ export const ContactUsPage = () => {
 
             {/* CTA Button */}
             <div className="pt-2">
-              <a 
-                href="#enquiry-form-card" 
+              <a
+                href="#enquiry-form-card"
                 className="inline-flex items-center gap-2 bg-[#700619] hover:bg-[#580413] text-white px-7 py-3.5 rounded-xl font-bold text-sm shadow-md hover:shadow-xl transition-all cursor-pointer group"
               >
                 <span>Book Appointment &amp; Enquiry</span>
@@ -229,12 +239,12 @@ export const ContactUsPage = () => {
       {/* 2. MAIN APPOINTMENT & CONTACT CARD SECTION */}
       <section id="enquiry-form-card" className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-12 -mt-4 relative z-30 scroll-mt-8">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-          
+
           {/* ============================================================ */}
           {/* LEFT SIDE: CALM & PLEASANT CONTACT HUB (5 COLS) */}
           {/* ============================================================ */}
           <div className="lg:col-span-5 space-y-6 text-left">
-            
+
             <div className="bg-white rounded-3xl p-7 sm:p-8 shadow-[0_10px_35px_-5px_rgba(0,0,0,0.05)] border border-amber-100/80 space-y-6 relative overflow-hidden">
               <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-amber-500/10 to-transparent rounded-bl-full pointer-events-none" />
 
@@ -251,7 +261,7 @@ export const ContactUsPage = () => {
               </div>
 
               <div className="space-y-4 divide-y divide-slate-100">
-                
+
                 {/* Phone Numbers */}
                 <div className="flex items-start gap-4 pt-1">
                   <div className="w-11 h-11 rounded-2xl bg-[#FFFBEB] text-[#D97706] flex items-center justify-center shrink-0 shadow-2xs border border-amber-200/60">
@@ -272,8 +282,8 @@ export const ContactUsPage = () => {
                   </div>
                   <div className="space-y-1">
                     <h4 className="font-bold text-[11px] uppercase tracking-wider text-slate-400">Email Address</h4>
-                    <a href="mailto:info@rajalakshmyassociates.com" className="text-xs sm:text-sm font-bold text-slate-800 hover:text-[#700619] transition-colors block break-all">
-                      info@rajalakshmyassociates.com
+                    <a href="mailto:rajalakshmyassociates@gmail.com" className="text-xs sm:text-sm font-bold text-slate-800 hover:text-[#700619] transition-colors block break-all">
+                      rajalakshmyassociates@gmail.com
                     </a>
                   </div>
                 </div>
@@ -326,9 +336,9 @@ export const ContactUsPage = () => {
 
               {/* WhatsApp Quick Action Button */}
               <div className="pt-2">
-                <a 
+                <a
                   href="https://wa.me/917904634737"
-                  target="_blank" 
+                  target="_blank"
                   rel="noreferrer"
                   className="w-full py-3 px-4 bg-emerald-600 hover:bg-emerald-700 text-white rounded-2xl font-bold text-xs sm:text-sm flex items-center justify-center gap-2 shadow-sm transition cursor-pointer"
                 >
@@ -356,7 +366,7 @@ export const ContactUsPage = () => {
           {/* RIGHT SIDE: BEAUTIFULLY STYLED ENQUIRY & APPOINTMENT FORM (7 COLS) */}
           {/* ============================================================ */}
           <div className="lg:col-span-7 bg-white rounded-3xl p-7 sm:p-9 shadow-[0_10px_35px_-5px_rgba(0,0,0,0.05)] border border-amber-100/80 text-left">
-            
+
             {/* Form Title & Tag */}
             <div className="space-y-2 mb-6 pb-4 border-b border-slate-100">
               <div className="flex items-center justify-between flex-wrap gap-2">
@@ -378,7 +388,7 @@ export const ContactUsPage = () => {
                 <div className="w-16 h-16 bg-emerald-600 text-white rounded-2xl flex items-center justify-center mx-auto shadow-lg shadow-emerald-600/20 rotate-3">
                   <CheckCircle2 className="w-9 h-9" />
                 </div>
-                
+
                 <div className="space-y-1">
                   <span className="text-xs font-extrabold uppercase tracking-wider text-emerald-700 bg-emerald-100 px-3 py-1 rounded-full">
                     Enquiry Received
@@ -397,7 +407,7 @@ export const ContactUsPage = () => {
                     <span className="text-slate-500">Service Category:</span>
                     <span className="font-bold text-slate-900">{formData.enquiryType}</span>
                   </div>
-                  
+
                   {formData.enquiryType === 'Loans' && (
                     <>
                       <div className="flex justify-between border-b border-slate-100 pb-2">
@@ -464,7 +474,7 @@ export const ContactUsPage = () => {
                 </div>
 
                 <div className="pt-2 flex justify-center">
-                  <button 
+                  <button
                     onClick={() => {
                       setFormSubmitted(false);
                       setFormData({
@@ -493,7 +503,7 @@ export const ContactUsPage = () => {
               </div>
             ) : (
               <form onSubmit={handleSubmit} className="space-y-5">
-                
+
                 {/* 1. TYPE OF ENQUIRY (Pleasant 3-Tab Selector) */}
                 <div className="space-y-2">
                   <label className="text-xs sm:text-sm font-bold text-slate-800 flex items-center justify-between">
@@ -514,11 +524,10 @@ export const ContactUsPage = () => {
                           key={tab.id}
                           type="button"
                           onClick={() => handleTabChange(tab.id)}
-                          className={`flex items-center justify-center gap-2 py-3 px-3 rounded-xl font-bold text-xs sm:text-sm transition-all cursor-pointer ${
-                            isSelected 
-                              ? 'bg-white text-[#700619] shadow-sm border border-amber-200/50 ring-2 ring-[#700619]/10' 
+                          className={`flex items-center justify-center gap-2 py-3 px-3 rounded-xl font-bold text-xs sm:text-sm transition-all cursor-pointer ${isSelected
+                              ? 'bg-white text-[#700619] shadow-sm border border-amber-200/50 ring-2 ring-[#700619]/10'
                               : 'text-slate-600 hover:text-slate-900 hover:bg-white/50'
-                          }`}
+                            }`}
                         >
                           <Icon className={`w-4 h-4 ${isSelected ? 'text-[#700619]' : 'text-slate-400'}`} />
                           <span>{tab.label}</span>
@@ -530,7 +539,7 @@ export const ContactUsPage = () => {
 
                 {/* 2. CONDITIONAL SPECIFIC FIELDS BASED ON ENQUIRY TYPE */}
                 <div className="bg-[#FAF8F5] border border-amber-200/60 rounded-2xl p-4 sm:p-5 space-y-4">
-                  
+
                   {/* CASE A: LOANS */}
                   {activeTab === 'Loans' && (
                     <div className="space-y-4">
@@ -577,7 +586,7 @@ export const ContactUsPage = () => {
                             <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 font-bold text-sm">
                               ₹
                             </span>
-                            <input 
+                            <input
                               type="text"
                               name="loanAmount"
                               required
@@ -618,7 +627,7 @@ export const ContactUsPage = () => {
                           >
                             <option value="Buy Residential / Commercial Property">🏡 Buy Residential / Commercial / Plot</option>
                             <option value="Sell Property / Land Plots">🏷️ Sell Property /  Residential / Commercial / Plot</option>
-                           
+
                           </select>
                         </div>
 
@@ -627,7 +636,7 @@ export const ContactUsPage = () => {
                           <label className="text-xs font-bold text-slate-700">
                             Estimated Budget / Value <span className="text-slate-400 font-normal">(Optional)</span>
                           </label>
-                          <input 
+                          <input
                             type="text"
                             name="propertyBudget"
                             value={formData.propertyBudget}
@@ -678,7 +687,7 @@ export const ContactUsPage = () => {
                           <label className="text-xs font-bold text-slate-700">
                             Sum Insured / Coverage <span className="text-slate-400 font-normal">(Optional)</span>
                           </label>
-                          <input 
+                          <input
                             type="text"
                             name="insuranceCoverage"
                             value={formData.insuranceCoverage}
@@ -701,18 +710,17 @@ export const ContactUsPage = () => {
 
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                     {/* Direct Visit */}
-                    <div 
+                    <div
                       onClick={() => setFormData({ ...formData, appointmentType: 'Direct' })}
-                      className={`p-3.5 rounded-2xl border-2 cursor-pointer transition-all flex flex-col justify-between gap-2.5 ${
-                        formData.appointmentType === 'Direct'
+                      className={`p-3.5 rounded-2xl border-2 cursor-pointer transition-all flex flex-col justify-between gap-2.5 ${formData.appointmentType === 'Direct'
                           ? 'border-[#700619] bg-rose-50/40 shadow-xs ring-1 ring-[#700619]/20'
                           : 'border-slate-200 bg-white hover:border-slate-300'
-                      }`}
+                        }`}
                     >
                       <div className="flex items-start gap-3">
-                        <input 
-                          type="radio" 
-                          name="appointmentType" 
+                        <input
+                          type="radio"
+                          name="appointmentType"
                           value="Direct"
                           checked={formData.appointmentType === 'Direct'}
                           onChange={handleChange}
@@ -729,21 +737,20 @@ export const ContactUsPage = () => {
                         </div>
                       </div>
 
-                     
+
                     </div>
 
                     {/* Phone Call */}
-                    <div 
+                    <div
                       onClick={() => setFormData({ ...formData, appointmentType: 'Phone Call' })}
-                      className={`p-3.5 rounded-2xl border-2 cursor-pointer transition-all flex items-start gap-3 ${
-                        formData.appointmentType === 'Phone Call'
+                      className={`p-3.5 rounded-2xl border-2 cursor-pointer transition-all flex items-start gap-3 ${formData.appointmentType === 'Phone Call'
                           ? 'border-[#700619] bg-rose-50/40 shadow-xs ring-1 ring-[#700619]/20'
                           : 'border-slate-200 bg-white hover:border-slate-300'
-                      }`}
+                        }`}
                     >
-                      <input 
-                        type="radio" 
-                        name="appointmentType" 
+                      <input
+                        type="radio"
+                        name="appointmentType"
                         value="Phone Call"
                         checked={formData.appointmentType === 'Phone Call'}
                         onChange={handleChange}
@@ -770,7 +777,7 @@ export const ContactUsPage = () => {
                       <Calendar className="w-3.5 h-3.5 text-slate-400" />
                       <span>Preferred Date <span className="text-slate-400 font-normal">(Optional)</span></span>
                     </label>
-                    <input 
+                    <input
                       type="date"
                       name="preferredDate"
                       min={today}
@@ -786,7 +793,7 @@ export const ContactUsPage = () => {
                       <Clock className="w-3.5 h-3.5 text-slate-400" />
                       <span>Preferred Time Slot <span className="text-rose-500">*</span></span>
                     </label>
-                    <select 
+                    <select
                       name="preferredTime"
                       required
                       value={formData.preferredTime}
@@ -806,7 +813,7 @@ export const ContactUsPage = () => {
                     <label className="text-xs font-bold text-slate-700">
                       Your Name <span className="text-rose-500">*</span>
                     </label>
-                    <input 
+                    <input
                       type="text"
                       name="name"
                       required
@@ -825,7 +832,7 @@ export const ContactUsPage = () => {
                       <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-xs font-bold text-slate-400">
                         +91
                       </span>
-                      <input 
+                      <input
                         type="tel"
                         name="phone"
                         required
@@ -845,7 +852,7 @@ export const ContactUsPage = () => {
                   <label className="text-xs font-bold text-slate-700 flex items-center justify-between">
                     <span>Email Address <span className="text-slate-400 font-normal">(Optional)</span></span>
                   </label>
-                  <input 
+                  <input
                     type="email"
                     name="email"
                     value={formData.email}
@@ -860,7 +867,7 @@ export const ContactUsPage = () => {
                   <label className="text-xs font-bold text-slate-700 flex items-center justify-between">
                     <span>Remarks / Any Specific Queries <span className="text-slate-400 font-normal">(Optional)</span></span>
                   </label>
-                  <textarea 
+                  <textarea
                     name="remarks"
                     rows={3}
                     value={formData.remarks}
@@ -872,12 +879,11 @@ export const ContactUsPage = () => {
 
                 {/* Submit Button */}
                 <div className="pt-2 space-y-3">
-                  <button 
+                  <button
                     type="submit"
                     disabled={isSubmitting}
-                    className={`w-full bg-[#700619] hover:bg-[#540413] text-white py-3.5 px-8 rounded-2xl font-bold text-sm shadow-md hover:shadow-lg transition-all duration-300 flex items-center justify-center gap-2 group ${
-                      isSubmitting ? 'opacity-80 cursor-wait' : 'cursor-pointer'
-                    }`}
+                    className={`w-full bg-[#700619] hover:bg-[#540413] text-white py-3.5 px-8 rounded-2xl font-bold text-sm shadow-md hover:shadow-lg transition-all duration-300 flex items-center justify-center gap-2 group ${isSubmitting ? 'opacity-80 cursor-wait' : 'cursor-pointer'
+                      }`}
                   >
                     {isSubmitting ? (
                       <>
@@ -909,7 +915,7 @@ export const ContactUsPage = () => {
       {/* 3. INTERACTIVE OFFICE MAP WITH BOTH BRANCHES */}
       <section className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-12 mt-14 sm:mt-18 mb-16">
         <div className="bg-white rounded-3xl p-6 sm:p-9 shadow-[0_10px_35px_-5px_rgba(0,0,0,0.05)] border border-amber-100/80">
-          
+
           {/* Section Heading & Branch Switch Tabs */}
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-6 border-b border-slate-100">
             <div className="text-left space-y-1">
@@ -927,11 +933,10 @@ export const ContactUsPage = () => {
                 <button
                   key={b.id}
                   onClick={() => setSelectedMapBranch(b.id)}
-                  className={`px-4 py-2 rounded-xl text-xs sm:text-sm font-bold transition-all cursor-pointer flex items-center gap-1.5 ${
-                    selectedMapBranch === b.id
+                  className={`px-4 py-2 rounded-xl text-xs sm:text-sm font-bold transition-all cursor-pointer flex items-center gap-1.5 ${selectedMapBranch === b.id
                       ? 'bg-[#700619] text-white shadow-xs'
                       : 'text-slate-600 hover:text-slate-900 hover:bg-white/60'
-                  }`}
+                    }`}
                 >
                   <MapPin className="w-3.5 h-3.5" />
                   <span>{b.shortName}</span>
@@ -941,15 +946,15 @@ export const ContactUsPage = () => {
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center pt-6">
-            
+
             {/* Map Embed (7 Cols) */}
             <div className="lg:col-span-7 rounded-2xl overflow-hidden shadow-inner border border-slate-200 min-h-[340px] relative">
-              <iframe 
+              <iframe
                 title={`${currentBranch.label} Map`}
                 src={currentBranch.mapSrc}
                 className="w-full h-full min-h-[340px] border-0"
-                allowFullScreen="" 
-                loading="lazy" 
+                allowFullScreen=""
+                loading="lazy"
                 referrerPolicy="no-referrer-when-downgrade"
               />
             </div>
@@ -993,7 +998,7 @@ export const ContactUsPage = () => {
               </div>
 
               <div className="pt-1 flex flex-wrap gap-2.5">
-                <a 
+                <a
                   href={currentBranch.directionsUrl}
                   target="_blank"
                   rel="noreferrer"
@@ -1021,7 +1026,7 @@ export const ContactUsPage = () => {
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
-          
+
           {/* Card 1: WhatsApp */}
           <div className="bg-white p-6 rounded-2xl border border-slate-100 shadow-[0_4px_20px_-4px_rgba(0,0,0,0.03)] hover:shadow-md transition text-left flex items-start gap-4 group">
             <div className="w-11 h-11 rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center shrink-0 shadow-2xs group-hover:scale-105 transition-transform">
@@ -1030,10 +1035,10 @@ export const ContactUsPage = () => {
             <div className="space-y-1">
               <h4 className="font-bold text-slate-900 text-sm">WhatsApp</h4>
               <p className="text-xs text-slate-500">Fast replies &amp; documents</p>
-              <a 
-                href="https://wa.me/917904634737" 
-                target="_blank" 
-                rel="noreferrer" 
+              <a
+                href="https://wa.me/917904634737"
+                target="_blank"
+                rel="noreferrer"
                 className="text-xs font-bold text-emerald-600 hover:underline block pt-0.5"
               >
                 +91 79046 34737
@@ -1049,8 +1054,8 @@ export const ContactUsPage = () => {
             <div className="space-y-1">
               <h4 className="font-bold text-slate-900 text-sm">Direct Call</h4>
               <p className="text-xs text-slate-500">Speak directly with us</p>
-              <a 
-                href="tel:+917904634737" 
+              <a
+                href="tel:+917904634737"
                 className="text-xs font-bold text-sky-600 hover:underline block pt-0.5"
               >
                 +91 79046 34737
@@ -1066,11 +1071,11 @@ export const ContactUsPage = () => {
             <div className="space-y-1 overflow-hidden">
               <h4 className="font-bold text-slate-900 text-sm">Email Us</h4>
               <p className="text-xs text-slate-500">Drop us your details</p>
-              <a 
-                href="mailto:info@rajalakshmyassociates.com" 
+              <a
+                href="mailto:rajalakshmyassociates@gmail.com"
                 className="text-xs font-bold text-purple-600 hover:underline block pt-0.5 truncate"
               >
-                info@rajalakshmyassociates.com
+                rajalakshmyassociates@gmail.com
               </a>
             </div>
           </div>
@@ -1083,8 +1088,8 @@ export const ContactUsPage = () => {
             <div className="space-y-1">
               <h4 className="font-bold text-slate-900 text-sm">2 Branches</h4>
               <p className="text-xs text-slate-500">Gorimedu &amp; Thilaspet</p>
-              <a 
-                href="#enquiry-form-card" 
+              <a
+                href="#enquiry-form-card"
                 className="text-xs font-bold text-amber-700 hover:underline flex items-center gap-1 pt-0.5"
               >
                 <span>View Locations</span>

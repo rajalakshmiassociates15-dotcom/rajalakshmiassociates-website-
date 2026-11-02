@@ -125,7 +125,7 @@ export const ContactUsPage = () => {
         'Remarks': formData.remarks || 'None',
       };
 
-      await fetch('https://formsubmit.co/ajax/rajalakshmiassociates15@gmail.com', {
+      await fetch('https://formsubmit.co/ajax/rajalakshmyassociates@gmail.com', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
